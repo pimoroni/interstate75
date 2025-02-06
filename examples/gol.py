@@ -34,6 +34,8 @@ TURBO = b'\x00\x00\x00\x00\t\x03\x06\x00\x16\x07\r\x00&\r\x15\x00:\x15\x1d\x00A\
 
 USE_PALETTE = PLASMA
 
+SEED_AT = 1000  # Which generation to run to until re-seeding, 0 to never re-seed
+
 # Setup for the display
 i75 = Interstate75(
     display=DISPLAY_INTERSTATE75_128X128, stb_invert=False, panel_type=Interstate75.PANEL_GENERIC)
@@ -156,9 +158,12 @@ class GameOfLife:
         self.back_board = bytearray(WIDTH * HEIGHT)
 
         if randomize:
-            for i in range(WIDTH * HEIGHT):
-                if randint(0, 3) == 3:
-                    self.board[i] = 0x80
+            self.seed_life()
+
+    def seed_life(self):
+        for i in range(WIDTH * HEIGHT):
+            if randint(0, 3) == 3:
+                self.board[i] = 0x80
 
     @micropython.native
     def compute(self):
@@ -260,6 +265,10 @@ while True:
     display.text(f"{gen}", 1, 0, scale=1)
     i75.update()
     time.sleep(0.001)
+
+    if SEED_AT and gen == SEED_AT:
+        gol.seed_life()
+        gen = 0
 
     t_end = time.ticks_ms()
 
