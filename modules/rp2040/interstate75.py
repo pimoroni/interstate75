@@ -1,5 +1,5 @@
 from pimoroni import RGBLED, Button
-from picographics import PicoGraphics, DISPLAY_INTERSTATE75_32X32, DISPLAY_INTERSTATE75_64X32, DISPLAY_INTERSTATE75_96X32, DISPLAY_INTERSTATE75_96X48, DISPLAY_INTERSTATE75_128X32, DISPLAY_INTERSTATE75_64X64, DISPLAY_INTERSTATE75_128X64, DISPLAY_INTERSTATE75_192X64, DISPLAY_INTERSTATE75_256X64, DISPLAY_INTERSTATE75_128X128
+from picographics import PicoGraphics, PEN_RGB888, DISPLAY_INTERSTATE75_32X32, DISPLAY_INTERSTATE75_64X32, DISPLAY_INTERSTATE75_96X32, DISPLAY_INTERSTATE75_96X48, DISPLAY_INTERSTATE75_128X32, DISPLAY_INTERSTATE75_64X64, DISPLAY_INTERSTATE75_128X64, DISPLAY_INTERSTATE75_192X64, DISPLAY_INTERSTATE75_256X64, DISPLAY_INTERSTATE75_128X128
 from pimoroni_i2c import PimoroniI2C
 import hub75
 import sys
@@ -43,9 +43,9 @@ class Interstate75:
     # Count Constants
     NUM_SWITCHES = 2
 
-    def __init__(self, display, panel_type=hub75.PANEL_GENERIC, stb_invert=False, color_order=hub75.COLOR_ORDER_RGB):
+    def __init__(self, display, panel_type=hub75.PANEL_GENERIC, stb_invert=False, color_order=hub75.COLOR_ORDER_RGB, pen_type=PEN_RGB888):
         self.interstate75w = "Pico W" in sys.implementation._machine
-        self.display = PicoGraphics(display=display)
+        self.display = PicoGraphics(display=display, pen_type=pen_type)
         self.width, self.height = self.display.get_bounds()
 
         out_width = self.width
