@@ -1,11 +1,22 @@
 import time
 import random
-import machine
+import machine  # noqa: F401
 import micropython
 from micropython import const
 from interstate75 import Interstate75, DISPLAY_INTERSTATE75_256X64
 
-machine.freq(266000000)
+"""
+An ultra-fast Doom Fire example.
+Spawns fire at the bottom of the screen and propagates it up with simple rules.
+"""
+
+# Runs ~30fps with stock clock,
+
+# uncomment the below for ~40fps
+# machine.freq(200_000_000)
+
+# uncomment the below for ~50fps
+# machine.freq(250_000_000)
 
 # Setup for the display
 i75 = Interstate75(
@@ -17,12 +28,6 @@ WIDTH = const(256 + 2)
 HEIGHT = const(64 + 4)
 fire_spawns = const(23)
 damping_factor = const(807)  # int(0.98 * (1 << 12) // 5)
-
-fire_colours = [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(20, 20, 20),
-                graphics.create_pen(180, 30, 0),
-                graphics.create_pen(220, 160, 0),
-                graphics.create_pen(255, 255, 180)]
 
 heat_array = bytearray(HEIGHT * WIDTH * 4)
 
@@ -76,18 +81,29 @@ def draw(heat: ptr32, graphics: ptr32):  # noqa: F821
                 colour = 0xffffb4
             graphics[x + 256 * y] = colour
 
-    i75.update()
-
 
 heat = make_heat()
+t_total = 0
+t_frames = 0
 
 while True:
-    start = time.ticks_ms()
+    t_start = time.ticks_ms()
 
     update(heat)
     draw(heat, memoryview(graphics))
 
-    print("total took: {} ms".format(time.ticks_ms() - start))
+    i75.update()
 
     # pause for a moment (important or the USB serial device will fail)
     time.sleep(0.001)
+
+    t_end = time.ticks_ms()
+
+    t_total += time.ticks_diff(t_end, t_start)
+    t_frames += 1
+
+    if t_frames == 100:
+        per_frame_avg = t_total / t_frames
+        print(f"100 frames in {t_total}ms, avg {per_frame_avg:.02f}ms per frame, {1000 / per_frame_avg:.02f} FPS")
+        t_frames = 0
+        t_total = 0

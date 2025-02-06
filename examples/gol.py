@@ -1,12 +1,10 @@
 import time
 import re
-import machine
+import machine  # noqa: F401
 import micropython
 from micropython import const
 from random import randint
-from interstate75 import Interstate75, DISPLAY_INTERSTATE75_256X64
-
-machine.freq(266000000)
+from interstate75 import Interstate75, DISPLAY_INTERSTATE75_128X128
 
 """
 Conway's Game Of Life for Interstate 75
@@ -14,14 +12,24 @@ You can load game of life RLE files below to try different patterns
 See https://conwaylife.com/ref/DRH/ to find some RLE examples.
 """
 
-# Setup for the display
-i75 = Interstate75(
-    display=DISPLAY_INTERSTATE75_256X64, stb_invert=False, panel_type=Interstate75.PANEL_GENERIC)
-display = i75.display
+# Runs ~20fps with stock clock,
+
+# uncomment the below for ~30fps
+# machine.freq(200_000_000)
+
+# uncomment the below for ~40fps
+# machine.freq(250_000_000)
 
 # These need to be constants for the viper optimized block below.
-WIDTH = const(256)
-HEIGHT = const(64)
+# Make sure to change these to 256 and 64 if you're using DISPLAY_INTERSTATE75_256X64
+WIDTH = const(128)
+HEIGHT = const(128)
+
+# Setup for the display
+i75 = Interstate75(
+    display=DISPLAY_INTERSTATE75_128X128, stb_invert=False, panel_type=Interstate75.PANEL_GENERIC)
+display = i75.display
+
 
 BLACK = display.create_pen(0, 0, 0)
 WHITE = display.create_pen(255, 255, 255)
@@ -92,6 +100,18 @@ def compute_gol(board: ptr8, new_board: ptr8):  # noqa: F821
             new_board[(y + 1) * WIDTH - 1] = cur_val - 1
 
 
+@micropython.viper
+def copy_to_display(source: ptr8, dest: ptr32):  # noqa: F821
+    for offset in range(HEIGHT * WIDTH):
+        dest[offset] = source[offset] if source[offset] < 0x80 else 0x009696ff
+
+
+@micropython.viper  # noqa: F821
+def make_display_ptr32(display) -> ptr32:  # noqa: F821
+    mv = ptr32(memoryview(display))        # noqa: F821
+    return mv
+
+
 class GameOfLife:
     def __init__(self, randomize=True):
         self.board = bytearray(WIDTH * HEIGHT)
@@ -107,17 +127,9 @@ class GameOfLife:
         compute_gol(self.board, self.back_board)
         self.board, self.back_board = self.back_board, self.board
 
-    @micropython.native
     def display(self, display):
-        for y in range(HEIGHT):
-            for x in range(WIDTH):
-                cur_val = self.board[y * WIDTH + x]
-                if cur_val == 0x80:
-                    pen = WHITE
-                else:
-                    pen = display.create_pen(0, 0, cur_val)
-                display.set_pen(pen)
-                display.pixel(x, y)
+        dest = make_display_ptr32(display)
+        copy_to_display(self.board, dest)
 
     def load_rle(self, filename):
         with open(filename, "r") as f:
@@ -195,14 +207,29 @@ gol = GameOfLife(randomize=True)
 # time.sleep(4)
 
 gen = 0
+t_frames = 0
+t_total = 0
+
 while True:
     t_start = time.ticks_ms()
+
     gol.compute()
+    t_end = time.ticks_ms()
     gol.display(display)
+
     gen += 1
     display.set_pen(RED)
     display.text(f"{gen}", 1, 0, scale=1)
     i75.update()
-    t_end = time.ticks_ms()
-    print(f"Took {t_end - t_start}ms")
     time.sleep(0.001)
+
+    t_end = time.ticks_ms()
+
+    t_total += time.ticks_diff(t_end, t_start)
+    t_frames += 1
+
+    if t_frames == 100:
+        per_frame_avg = t_total / t_frames
+        print(f"100 frames in {t_total}ms, avg {per_frame_avg:.02f}ms per frame, {1000 / per_frame_avg:.02f} FPS")
+        t_frames = 0
+        t_total = 0
