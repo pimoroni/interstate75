@@ -5,7 +5,7 @@ import numpy
 # When used in Viper it can be cast to uint32 giving fast lookup to RGB888 compatible colours
 # Find palette images here: https://matplotlib.org/stable/users/explain/colors/colormaps.html
 
-PALETTE = "turbo"
+PALETTE = "nipy_spectral"
 NUM_ENTRIES = 128
 MIN_BRIGHTNESS = float(128)
 MAX_BRIGHTNESS = float(255)
@@ -15,20 +15,27 @@ MAX_BRIGHTNESS = float(255)
 FADEOUT_LENGTH = 5
 
 # Get 128 colours
-colours = pyplot.get_cmap(PALETTE, NUM_ENTRIES).colors
+colourmap = pyplot.get_cmap(PALETTE, NUM_ENTRIES)
+colours = colourmap(range(0, NUM_ENTRIES)).astype('float')
 
+if FADEOUT_LENGTH > 0:
+    fadeout_length = FADEOUT_LENGTH + 1
 
-force_fadeout = numpy.dstack(
-    [
-        numpy.linspace(0, 1, FADEOUT_LENGTH),
-        numpy.linspace(0, 1, FADEOUT_LENGTH),
-        numpy.linspace(0, 1, FADEOUT_LENGTH),
-        numpy.zeros(FADEOUT_LENGTH), # Unused byte
-    ]
-)[0]
+    colours[1:FADEOUT_LENGTH + 1, :] *= numpy.dstack(
+        [
+            numpy.linspace(0, 1, FADEOUT_LENGTH),
+            numpy.linspace(0, 1, FADEOUT_LENGTH),
+            numpy.linspace(0, 1, FADEOUT_LENGTH),
+            numpy.zeros(FADEOUT_LENGTH), # Unused byte
+        ]
+    )[0]
 
-# Always fade to black, even if it's jarring
-colours[0:FADEOUT_LENGTH] *= force_fadeout
+    # Always zero out the first colour,
+    # the way GOL works causes some oscillation between the two minimum states
+    # resulting in visual flicker if we don't do this!
+    # (we're kinda hoping the first fadeout value is also 0)
+    colours[0, :] *= 0
+
 
 # Scale them to 0-255
 scale = numpy.dstack(
@@ -42,9 +49,8 @@ scale = numpy.dstack(
 
 colours *= scale
 
-
 # Convert to uint8
-colours = colours.astype('uint8')
+colours = numpy.clip(colours, 0, 255).astype('uint8')
 
 # Reshape to four byte uint32s
 colours = colours.reshape(NUM_ENTRIES, 4)
