@@ -23,6 +23,7 @@ jobs:
       RELEASE_FILE: ${{ matrix.name }}-${{ github.event.release.tag_name || github.sha }}-micropython
       CI_PROJECT_ROOT: ${{ github.workspace }}/src-${{ github.sha }}
       CI_BUILD_ROOT: ${{ github.workspace }}
+      CI_USE_ENV: 1
 
     steps:
     - name: Compiler Cache Fixup
@@ -52,7 +53,7 @@ jobs:
     - name: "Prepare tools & dependencies"
       shell: bash
       run: |
-        source $CI_PROJECT_ROOT/ci/micropython.sh && ci_debug
+        source $CI_PROJECT_ROOT/ci/micropython.sh
         mkdir -p $CI_BUILD_ROOT
         ci_apt_install_build_deps
         ci_prepare_all
@@ -60,14 +61,14 @@ jobs:
     - name: "MicroPython: Configure"
       shell: bash
       run: |
-        source $CI_PROJECT_ROOT/ci/micropython.sh && ci_debug
+        source $CI_PROJECT_ROOT/ci/micropython.sh
         micropython_version
         ci_cmake_configure ${{ matrix.name }}
 
     - name: "MicroPython: Build"
       shell: bash
       run: |
-        source $CI_PROJECT_ROOT/ci/micropython.sh && ci_debug
+        source $CI_PROJECT_ROOT/ci/micropython.sh
         python3 -m venv "$CI_BUILD_ROOT/.dir2uf2"
         source "$CI_BUILD_ROOT/.dir2uf2/bin/activate"
         ci_cmake_build ${{ matrix.name }}
