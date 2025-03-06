@@ -48,7 +48,7 @@ jobs:
     - name: "Install Arm GNU Toolchain (arm-none-eabi-gcc)"
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       with:
-        release: '13.3.Rel1'
+        release: '14.2.Rel1'
 
     - name: "Prepare tools & dependencies"
       shell: bash
@@ -69,8 +69,6 @@ jobs:
       shell: bash
       run: |
         source $CI_PROJECT_ROOT/ci/micropython.sh
-        python3 -m venv "$CI_BUILD_ROOT/.dir2uf2"
-        source "$CI_BUILD_ROOT/.dir2uf2/bin/activate"
         ci_cmake_build ${{ matrix.name }}
 
     - name: "Artifacts: Upload .uf2"
