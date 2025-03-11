@@ -5,7 +5,11 @@ import micropython
 from micropython import const
 from interstate75 import Interstate75, DISPLAY_INTERSTATE75_256X64
 
-machine.freq(266000000)
+# medium spicy overclock
+machine.freq(200000000)
+
+# uncomment for maximum speed
+# machine.freq(266000000)
 
 # Setup for the display
 i75 = Interstate75(
