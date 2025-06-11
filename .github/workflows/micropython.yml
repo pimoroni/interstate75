@@ -17,6 +17,7 @@ jobs:
         - name: i75_rp2040
         - name: i75w_rp2040
         - name: i75w_rp2350
+        - name: i75_duo
 
     env:
       # MicroPython version will be contained in github.event.release.tag_name for releases

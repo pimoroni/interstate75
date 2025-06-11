@@ -72,6 +72,8 @@ def compute_gol(board: ptr8, new_board: ptr8):  # noqa: F821
             new_board[y * WIDTH] = cur_val
         elif cur_val > 0:
             new_board[y * WIDTH] = cur_val - 1
+        else:
+            new_board[y * WIDTH] = 0
 
         for x in range(1, WIDTH - 1):
             alive = 0
@@ -95,6 +97,8 @@ def compute_gol(board: ptr8, new_board: ptr8):  # noqa: F821
                 new_board[y * WIDTH + x] = cur_val
             elif cur_val > 0:
                 new_board[y * WIDTH + x] = cur_val - 1
+            else:
+                new_board[y * WIDTH + x] = 0
 
         alive = 0
         if y > 0:
@@ -113,6 +117,8 @@ def compute_gol(board: ptr8, new_board: ptr8):  # noqa: F821
             new_board[(y + 1) * WIDTH - 1] = cur_val
         elif cur_val > 0:
             new_board[(y + 1) * WIDTH - 1] = cur_val - 1
+        else:
+            new_board[(y + 1) * WIDTH - 1] = 0
 
 
 @micropython.viper

@@ -36,9 +36,6 @@ for _ in range(75):
 BG = graphics.create_pen(0, 0, 0)
 
 while True:
-    graphics.set_pen(BG)
-    graphics.clear()
-
     for ball in balls:
         ball.x += ball.dx
         ball.y += ball.dy
@@ -54,6 +51,14 @@ while True:
         if ball.y < ymin or ball.y > ymax:
             ball.dy *= -1
 
+    # Wait before clearing the screen
+    # we (Core1) might still be copying the buffer
+    i75.wait_for_flip()
+
+    graphics.set_pen(BG)
+    graphics.clear()
+
+    for ball in balls:
         graphics.set_pen(ball.pen)
         graphics.circle(int(ball.x), int(ball.y), int(ball.r))
 
