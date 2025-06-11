@@ -2,7 +2,7 @@
 set(Python_FIND_VIRTUALENV "FIRST")
 set(Python_FIND_UNVERSIONED_NAMES "FIRST")
 set(Python_FIND_STRATEGY "LOCATION")
-find_package (Python COMPONENTS Interpreter Development)
+find_package (Python3 COMPONENTS Interpreter Development)
 
 message("dir2uf2/py_decl: Using Python ${Python_EXECUTABLE}")
 
