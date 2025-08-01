@@ -16,7 +16,7 @@ static inline bool usb_connected(void) {
 namespace pimoroni {
 
 #define GPIO_INIT_BOTH(pin, initial) gpio_init(pin); gpio_set_function(pin, GPIO_FUNC_SIO); gpio_set_dir(pin, true); gpio_put(pin, initial); \
-                                     gpio_init(pin + 32); gpio_set_function(pin + 32, GPIO_FUNC_SIO); gpio_set_dir(pin + 32, true); gpio_put(pin + 32, initial)
+                                     gpio_init(pin + 31); gpio_set_function(pin + 31, GPIO_FUNC_SIO); gpio_set_dir(pin + 31, true); gpio_put(pin + 31, initial)
 
 Duo75::Duo75(Pixel *buffer)
  {
@@ -50,7 +50,7 @@ Duo75::Duo75(Pixel *buffer)
 
 void gpio_put_both(uint pin, bool value) {
     gpio_put(pin, value);
-    gpio_put(pin + 32, value);
+    gpio_put(pin + 31, value);
 }
 
 void Duo75::start(irq_handler_t handler) {
@@ -76,11 +76,11 @@ void Duo75::start(irq_handler_t handler) {
         duo75_data_rgb888_program_init(pio_a, sm_data_a1, data_prog_offs_a, DATA_BASE_PIN, pin_clk);
         duo75_data_rgb888_program_init(pio_a, sm_data_a2, data_prog_offs_a, DATA_BASE_PIN + 3, pin_clk);
 
-        duo75_data_rgb888_program_init(pio_b, sm_data_b1, data_prog_offs_b, DATA_BASE_PIN + 32, pin_clk + 32);
-        duo75_data_rgb888_program_init(pio_b, sm_data_b2, data_prog_offs_b, DATA_BASE_PIN + 32 + 3, pin_clk + 32);
+        duo75_data_rgb888_program_init(pio_b, sm_data_b1, data_prog_offs_b, DATA_BASE_PIN + 31, pin_clk + 31);
+        duo75_data_rgb888_program_init(pio_b, sm_data_b2, data_prog_offs_b, DATA_BASE_PIN + 31 + 3, pin_clk + 31);
 
         duo75_row_program_init(pio_a, sm_row_a, row_prog_offs_a, ROWSEL_BASE_PIN, ROWSEL_N_PINS, pin_stb, latch_cycles);
-        duo75_row_program_init(pio_b, sm_row_b, row_prog_offs_b, ROWSEL_BASE_PIN + 32, ROWSEL_N_PINS, pin_stb + 32, latch_cycles);
+        duo75_row_program_init(pio_b, sm_row_b, row_prog_offs_b, ROWSEL_BASE_PIN + 31, ROWSEL_N_PINS, pin_stb + 31, latch_cycles);
 
         // Keep PIO constant when overclocked
         const float clock_hz = SYS_CLK_MHZ * 1000000;
@@ -237,8 +237,8 @@ void Duo75::stop(irq_handler_t handler) {
     gpio_put_masked(0b111111 << pin_r0, 0);
     gpio_put_masked(0b11111 << pin_row_a, 0);
 
-    gpio_put_masked64((uint64_t)0b111111 << (pin_r0 + 32), 0);
-    gpio_put_masked64((uint64_t)0b11111 << (pin_row_a + 32), 0);
+    gpio_put_masked64((uint64_t)0b111111 << (pin_r0 + 31), 0);
+    gpio_put_masked64((uint64_t)0b11111 << (pin_row_a + 31), 0);
 
     gpio_put_both(pin_clk, !clk_polarity);
     gpio_put_both(pin_oe, !oe_polarity);
