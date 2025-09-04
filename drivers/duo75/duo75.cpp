@@ -301,13 +301,6 @@ inline void Duo75::copy_to_back_buffer(void *data, size_t len, int start_x, int 
     uint32_t *p = (uint32_t *)data;
     uint32_t *end = p + (len / 4);
 
-    if(half_brightness) {
-        uint32_t ms = to_ms_since_boot(get_absolute_time());
-        if (ms >= 5000 && !usb_connected()) {
-            half_brightness = false;
-        }
-    }
-
     for(uint y = start_y; y < height; y++) {
         // We are swapping X and Y to achieve a 90 degree rotation
         // Mirror along the Y axis (top to bottom)
@@ -328,12 +321,7 @@ inline void Duo75::copy_to_back_buffer(void *data, size_t len, int start_x, int 
 
             offset += sy * width;
 
-            if(half_brightness) {
-                //back_buffer[offset] &= ((0b0000011111 << 20) | (0b0001111111 << 10) | 0b0001111111);
-                back_buffer[offset] = (GAMMA_10BIT_HALF_BRIGHTNESS[rgb & 0xff] << 20) | (GAMMA_10BIT_HALF_BRIGHTNESS[(rgb >> 8) & 0xff] << 10) | (GAMMA_10BIT_HALF_BRIGHTNESS[(rgb >> 16) & 0xff] << 0);
-            } else {
-                back_buffer[offset] = (GAMMA_10BIT[rgb & 0xff] << 20) | (GAMMA_10BIT[(rgb >> 8) & 0xff] << 10) | (GAMMA_10BIT[(rgb >> 16) & 0xff] << 0);
-            }
+            back_buffer[offset] = (GAMMA_10BIT[rgb & 0xff] << 20) | (GAMMA_10BIT[(rgb >> 8) & 0xff] << 10) | (GAMMA_10BIT[(rgb >> 16) & 0xff] << 0);
 
             if(p == end) {
                 return;
