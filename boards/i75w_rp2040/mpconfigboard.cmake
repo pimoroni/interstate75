@@ -1,5 +1,5 @@
-# cmake file for Raspberry Pi Pico W
-set(PICO_BOARD "pico_w")
+set(PICO_BOARD "pimoroni_i75w_2040")
+set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR})
 
 # Board specific version of the frozen manifest
 set(MICROPY_FROZEN_MANIFEST ${MICROPY_BOARD_DIR}/manifest.py)

@@ -1,4 +1,5 @@
-set(PICO_BOARD "pico2_w")
+set(PICO_BOARD "pimoroni_i75w_2350")
+set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR})
 
 # Board specific version of the frozen manifest
 set(MICROPY_FROZEN_MANIFEST ${MICROPY_BOARD_DIR}/manifest.py)
