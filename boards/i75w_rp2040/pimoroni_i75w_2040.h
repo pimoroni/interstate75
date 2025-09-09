@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Raspberry Pi (Trading) Ltd.
+ * Copyright (c) 2022 Raspberry Pi (Trading) Ltd.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -9,29 +9,26 @@
 //       SHOULD ONLY CONSIST OF PREPROCESSOR DIRECTIVES
 // -----------------------------------------------------
 
-// This header may be included by other board headers as "boards/pico2_w.h"
-
-// pico_cmake_set PICO_PLATFORM=rp2350
+// pico_cmake_set PICO_PLATFORM        = rp2040
 // pico_cmake_set PICO_CYW43_SUPPORTED = 1
 
-#ifndef _BOARDS_PICO2_W_H
-#define _BOARDS_PICO2_W_H
+// This header may be included by other board headers as "boards/pico_w.h"
+
+#ifndef _BOARDS_PICO_W_H
+#define _BOARDS_PICO_W_H
 
 // For board detection
-#define RASPBERRYPI_PICO2_W
-
-// --- RP2350 VARIANT ---
-#define PICO_RP2350A 1
+#define RASPBERRYPI_PICO_W
 
 // --- UART ---
 #ifndef PICO_DEFAULT_UART
 #define PICO_DEFAULT_UART 0
 #endif
 #ifndef PICO_DEFAULT_UART_TX_PIN
-#define PICO_DEFAULT_UART_TX_PIN 16
+#define PICO_DEFAULT_UART_TX_PIN 0
 #endif
 #ifndef PICO_DEFAULT_UART_RX_PIN
-#define PICO_DEFAULT_UART_RX_PIN 17
+#define PICO_DEFAULT_UART_RX_PIN 1
 #endif
 
 // --- LED ---
@@ -43,14 +40,28 @@
 #define PICO_DEFAULT_I2C 0
 #endif
 #ifndef PICO_DEFAULT_I2C_SDA_PIN
-#define PICO_DEFAULT_I2C_SDA_PIN 20
+#define PICO_DEFAULT_I2C_SDA_PIN 4
 #endif
 #ifndef PICO_DEFAULT_I2C_SCL_PIN
-#define PICO_DEFAULT_I2C_SCL_PIN 21
+#define PICO_DEFAULT_I2C_SCL_PIN 5
 #endif
 
 // --- SPI ---
-// no PICO_DEFAULT_SPI - Not broken out, pins are split between SPI0 and SPI1
+#ifndef PICO_DEFAULT_SPI
+#define PICO_DEFAULT_SPI 0
+#endif
+#ifndef PICO_DEFAULT_SPI_SCK_PIN
+#define PICO_DEFAULT_SPI_SCK_PIN 22
+#endif
+#ifndef PICO_DEFAULT_SPI_TX_PIN
+#define PICO_DEFAULT_SPI_TX_PIN 19
+#endif
+#ifndef PICO_DEFAULT_SPI_RX_PIN
+#define PICO_DEFAULT_SPI_RX_PIN 16
+#endif
+#ifndef PICO_DEFAULT_SPI_CSN_PIN
+#define PICO_DEFAULT_SPI_CSN_PIN 17
+#endif
 
 // --- FLASH ---
 
@@ -60,12 +71,20 @@
 #define PICO_FLASH_SPI_CLKDIV 2
 #endif
 
-// pico_cmake_set_default PICO_FLASH_SIZE_BYTES = (4 * 1024 * 1024)
+// pico_cmake_set_default PICO_FLASH_SIZE_BYTES = (2 * 1024 * 1024)
 #ifndef PICO_FLASH_SIZE_BYTES
-#define PICO_FLASH_SIZE_BYTES (4 * 1024 * 1024)
+#define PICO_FLASH_SIZE_BYTES (2 * 1024 * 1024)
 #endif
-// Drive high to force power supply into PWM mode (lower ripple on 3V3 at light loads)
 // note the SMSP mode pin is on WL_GPIO1
+// #define PICO_SMPS_MODE_PIN
+
+#ifndef PICO_RP2040_B0_SUPPORTED
+#define PICO_RP2040_B0_SUPPORTED 0
+#endif
+
+#ifndef PICO_RP2040_B1_SUPPORTED
+#define PICO_RP2040_B1_SUPPORTED 0
+#endif
 
 #ifndef CYW43_WL_GPIO_COUNT
 #define CYW43_WL_GPIO_COUNT 3
@@ -93,11 +112,6 @@
 // There is an example in adc/read_vsys in pico-examples.
 #ifndef PICO_VSYS_PIN
 #define PICO_VSYS_PIN 29
-#endif
-
-// pico_cmake_set_default PICO_RP2350_A2_SUPPORTED = 1
-#ifndef PICO_RP2350_A2_SUPPORTED
-#define PICO_RP2350_A2_SUPPORTED 1
 #endif
 
 // cyw43 SPI pins can't be changed at runtime
