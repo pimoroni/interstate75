@@ -3,7 +3,7 @@ import random
 import machine  # noqa: F401
 import micropython
 from micropython import const
-from interstate75 import Interstate75, DISPLAY_INTERSTATE75_256X64
+from interstate75 import Interstate75, DISPLAY_INTERSTATE75_128X128
 
 """
 An ultra-fast Doom Fire example.
@@ -20,12 +20,12 @@ Spawns fire at the bottom of the screen and propagates it up with simple rules.
 
 # Setup for the display
 i75 = Interstate75(
-    display=DISPLAY_INTERSTATE75_256X64, stb_invert=False, panel_type=Interstate75.PANEL_GENERIC)
+    display=DISPLAY_INTERSTATE75_128X128, stb_invert=False, panel_type=Interstate75.PANEL_GENERIC)
 graphics = i75.display
 
 # These need to be constants for the viper optimized block below.
-WIDTH = const(256 + 2)
-HEIGHT = const(64 + 4)
+WIDTH = const(128 + 2)
+HEIGHT = const(128 + 4)
 fire_spawns = const(23)
 damping_factor = const(807)  # int(0.98 * (1 << 12) // 5)
 
@@ -72,13 +72,15 @@ def draw(heat: ptr32, graphics: ptr32):  # noqa: F821
                 colour = 0
             elif value < 16384:
                 colour = 0x141414
+            elif value < 20000:
+                colour = 0x201414
             elif value < 22938:
                 colour = 0xb41e00
             elif value < 29490:
                 colour = 0xdca000
             else:
                 colour = 0xffffb4
-            graphics[x + 256 * y] = colour
+            graphics[x + 128 * y] = colour
 
 
 heat = make_heat()

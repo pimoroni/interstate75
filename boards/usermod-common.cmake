@@ -13,6 +13,9 @@ list(APPEND CMAKE_MODULE_PATH "${PIMORONI_PICO_PATH}/micropython")
 # All regular modules
 list(APPEND CMAKE_MODULE_PATH "${PIMORONI_PICO_PATH}/micropython/modules")
 
+# Allows us to find /modules/duo75
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/..")
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -39,7 +42,11 @@ include(adcfft/micropython)
 
 # LEDs & Matrices
 include(plasma/micropython)
+if("${PICO_BOARD}" STREQUAL "pimoroni_interstate75_duo")
+include(modules/duo75/micropython)
+else()
 include(hub75/micropython)
+endif()
 
 # Servos & Motors
 include(pwm/micropython)

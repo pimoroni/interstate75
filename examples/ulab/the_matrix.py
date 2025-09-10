@@ -47,7 +47,7 @@ def update():
 def draw():
     # Copy the effect to the framebuffer
     memoryview(graphics)[:] = numpy.ndarray(numpy.clip(matrix, 0, 1) * 254, dtype=numpy.uint8).tobytes()
-    i75.update()
+
 
 
 matrix = numpy.zeros((height, width))
@@ -61,6 +61,7 @@ while True:
     gc.collect()
     update()
     draw()
+    i75.update()
     tfinish = time.ticks_ms()
 
     total = tfinish - tstart

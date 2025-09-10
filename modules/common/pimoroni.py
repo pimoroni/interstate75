@@ -1,19 +1,9 @@
 import time
 from machine import Pin, PWM, ADC
 
-
-BREAKOUT_GARDEN_I2C_PINS = {"sda": 4, "scl": 5}
-PICO_EXPLORER_I2C_PINS = {"sda": 20, "scl": 21}
-HEADER_I2C_PINS = {"sda": 20, "scl": 21}
-PICOVISION_I2C_PINS = {"sda": 6, "scl": 7}
-
 # Motor and encoder directions
 NORMAL_DIR = 0x00
 REVERSED_DIR = 0x01
-
-BREAKOUT_GARDEN_SPI_SLOT_FRONT = 0
-BREAKOUT_GARDEN_SPI_SLOT_BACK = 1
-PICO_EXPLORER_SPI_ONBOARD = 2
 
 
 class Analog:
@@ -137,7 +127,7 @@ class Button:
 
 
 class RGBLED:
-    def __init__(self, r, g, b, invert=True):
+    def __init__(self, r="LED_R", g="LED_G", b="LED_B", invert=True):
         self.invert = invert
         self.led_r = PWM(Pin(r))
         self.led_r.freq(1000)

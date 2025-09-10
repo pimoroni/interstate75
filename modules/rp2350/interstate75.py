@@ -72,6 +72,13 @@ class Interstate75:
             buffer = self.display
         self.hub75.update(buffer)
 
+    def is_busy(self):
+        return False
+
+    def wait_for_flip(self):
+        while self.is_busy():
+            pass
+
     def switch_pressed(self, switch):
         if switch < 0 or switch >= self.NUM_SWITCHES:
             raise ValueError("switch out of range. Expected SWITCH_A (0), SWITCH_B/BOOT (2)")
