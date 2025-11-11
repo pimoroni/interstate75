@@ -19,6 +19,9 @@
 // For board detection
 #define RASPBERRYPI_PICO2
 
+// --- BOARD SPECIFIC ---
+#define PIMORONI_I75DUO_PSRAM_CS_PIN 47
+
 // --- RP2350 VARIANT ---
 // not PICO_RP2350A
 
