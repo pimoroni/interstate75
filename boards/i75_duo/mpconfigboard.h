@@ -12,8 +12,12 @@
 // CYW43 driver configuration.
 #define CYW43_USE_SPI                           (1)
 #define CYW43_LWIP                              (1)
-#define CYW43_GPIO                              (0)
+#define CYW43_GPIO                              (1)
 #define CYW43_SPI_PIO                           (1)
+
+#ifndef CYW43_WL_GPIO_COUNT
+#define CYW43_WL_GPIO_COUNT 3
+#endif
 
 #define MICROPY_HW_PIN_EXT_COUNT    CYW43_WL_GPIO_COUNT
 
