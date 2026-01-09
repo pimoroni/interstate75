@@ -132,7 +132,8 @@ function ci_cmake_build {
 }
 
 if [ -z ${CI_USE_ENV+x} ] || [ -z ${CI_PROJECT_ROOT+x} ] || [ -z ${CI_BUILD_ROOT+x} ]; then
-    SCRIPT_PATH="$(dirname $0)"
+    SCRIPT_PATH=${BASH_SOURCE-$0}
+    SCRIPT_PATH=$(dirname "$SCRIPT_PATH")
     CI_PROJECT_ROOT=$(realpath "$SCRIPT_PATH/..")
     CI_BUILD_ROOT=$(pwd)
 fi
