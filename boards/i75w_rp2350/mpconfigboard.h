@@ -18,5 +18,7 @@
 
 #define MICROPY_HW_PIN_EXT_COUNT    CYW43_WL_GPIO_COUNT
 
+#define MICROPY_HW_SPI_NO_DEFAULT_PINS          (1)
+
 int mp_hal_is_pin_reserved(int n);
 #define MICROPY_HW_PIN_RESERVED(i) mp_hal_is_pin_reserved(i)

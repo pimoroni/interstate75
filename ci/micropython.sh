@@ -1,13 +1,13 @@
 export TERM=${TERM:="xterm-256color"}
 
 MICROPYTHON_FLAVOUR="micropython"
-MICROPYTHON_VERSION="master"
+MICROPYTHON_VERSION="v1.27.0"
 
 PIMORONI_PICO_FLAVOUR="pimoroni"
-PIMORONI_PICO_VERSION="feature/picovector2-and-layers"
+PIMORONI_PICO_VERSION="main"
 
-PY_DECL_VERSION="v0.0.3"
-DIR2UF2_VERSION="v0.0.9"
+PY_DECL_VERSION="v0.0.5"
+DIR2UF2_VERSION="v0.1.0"
 
 
 function log_success {
@@ -132,7 +132,8 @@ function ci_cmake_build {
 }
 
 if [ -z ${CI_USE_ENV+x} ] || [ -z ${CI_PROJECT_ROOT+x} ] || [ -z ${CI_BUILD_ROOT+x} ]; then
-    SCRIPT_PATH="$(dirname $0)"
+    SCRIPT_PATH=${BASH_SOURCE-$0}
+    SCRIPT_PATH=$(dirname "$SCRIPT_PATH")
     CI_PROJECT_ROOT=$(realpath "$SCRIPT_PATH/..")
     CI_BUILD_ROOT=$(pwd)
 fi
