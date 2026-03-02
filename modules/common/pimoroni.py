@@ -82,7 +82,10 @@ class Button:
         self.invert = invert
         self.repeat_time = repeat_time
         self.hold_time = hold_time
-        self.pin = Pin(button, Pin.IN, Pin.PULL_UP if invert else Pin.PULL_DOWN)
+        try:
+            self.pin = Pin(button, Pin.IN, Pin.PULL_UP if invert else Pin.PULL_DOWN)
+        except ValueError:  # Handle EXT_GPIO not supporting pulls
+            self.pin = Pin(button, Pin.IN)
         self.last_state = False
         self.pressed = False
         self.pressed_time = 0
