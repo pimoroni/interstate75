@@ -21,9 +21,8 @@ Controls:
 """
 
 # General Constants
-I2C_PINS = {"id": 0, "sda": 20, "scl": 21}    # The I2C pins the QwSTPad is connected to
-I2C_ADDRESS = ADDRESSES[0]                  # The I2C address of the connected QwSTPad
-BRIGHTNESS = 1.0                            # The brightness of the LCD backlight (from 0.0 to 1.0)
+I2C_ADDRESS = ADDRESSES[0]              # The I2C address of the connected QwSTPad
+BRIGHTNESS = 1.0                        # The brightness of the LCD backlight (from 0.0 to 1.0)
 
 # Gameplay Constants
 Position = namedtuple("Position", ("x", "y"))
@@ -53,9 +52,9 @@ BACKGROUND = display.create_pen(60, 57, 169)
 PATH = display.create_pen((227 + 60) // 2, (231 + 57) // 2, (110 + 169) // 2)
 
 # Variables
-i2c = I2C(**I2C_PINS)                           # The I2C instance to pass to the QwSTPad
-complete = False                                # Has the game been completed?
-level = 0                                       # The current "level" the player is on (affects difficulty)
+i2c = I2C()                             # The I2C instance to pass to the QwSTPad
+complete = False                        # Has the game been completed?
+level = 0                               # The current "level" the player is on (affects difficulty)
 
 # Get the width and height from the display
 WIDTH, HEIGHT = display.get_bounds()
@@ -315,6 +314,8 @@ try:
                 level += 1
                 build_maze()
                 player.position(*start)
+
+        i75.wait_for_flip()
 
         # Clear the screen to the background colour
         display.set_pen(BACKGROUND)

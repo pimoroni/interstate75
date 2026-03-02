@@ -1,7 +1,7 @@
 from interstate75 import Interstate75, DISPLAY_INTERSTATE75_128X128
 import time
 import gc
-from picovector import PicoVector, Polygon, Transform, ANTIALIAS_X16
+from picovector import PicoVector, Polygon, Transform, ANTIALIAS_FAST as AA
 
 i75 = Interstate75(display=DISPLAY_INTERSTATE75_128X128)
 display = i75.display
@@ -12,7 +12,7 @@ HEIGHT = i75.height
 vector = PicoVector(display)
 t = Transform()
 vector.set_transform(t)
-vector.set_antialiasing(ANTIALIAS_X16)
+vector.set_antialiasing(AA)
 
 RED = display.create_pen(200, 0, 0)
 BLACK = display.create_pen(0, 0, 0)
@@ -38,22 +38,22 @@ face = Polygon()
 face.circle(int(WIDTH / 2), int(HEIGHT / 2), int(HEIGHT / 2))
 
 tick_mark = Polygon()
-tick_mark.rectangle(int(WIDTH / 2) - 3, 10, 6, int(HEIGHT / 48))
+tick_mark.rectangle(int(WIDTH / 2) - 3, 2, 2, int(HEIGHT / 48))
 
 hour_mark = Polygon()
-hour_mark.rectangle(int(WIDTH / 2) - 5, 10, 10, int(HEIGHT / 10))
+hour_mark.rectangle(int(WIDTH / 2) - 5, 2, 4, int(HEIGHT / 20))
 
 minute_hand_length = int(HEIGHT / 2) - int(HEIGHT / 24)
 minute_hand = Polygon()
-minute_hand.path((-5, -minute_hand_length), (-10, int(HEIGHT / 16)), (10, int(HEIGHT / 16)), (5, -minute_hand_length))
+minute_hand.path((-2, -minute_hand_length), (-4, int(HEIGHT / 16)), (4, int(HEIGHT / 16)), (2, -minute_hand_length))
 
 hour_hand_length = int(HEIGHT / 2) - int(HEIGHT / 8)
 hour_hand = Polygon()
-hour_hand.path((-5, -hour_hand_length), (-10, int(HEIGHT / 16)), (10, int(HEIGHT / 16)), (5, -hour_hand_length))
+hour_hand.path((-3, -hour_hand_length), (-5, int(HEIGHT / 16)), (5, int(HEIGHT / 16)), (3, -hour_hand_length))
 
 second_hand_length = int(HEIGHT / 2) - int(HEIGHT / 8)
 second_hand = Polygon()
-second_hand.path((-2, -second_hand_length), (-2, int(HEIGHT / 8)), (2, int(HEIGHT / 8)), (2, -second_hand_length))
+second_hand.path((-1, -second_hand_length), (-2, int(HEIGHT / 8)), (1, int(HEIGHT / 8)), (2, -second_hand_length))
 
 print(time.localtime())
 
@@ -78,26 +78,26 @@ while True:
     t.reset()
 
     display.set_pen(WHITE)
-    display.circle(int(WIDTH / 2), int(HEIGHT / 2), int(HEIGHT / 2) - 4)
+    display.circle(int(WIDTH / 2), int(HEIGHT / 2), int(HEIGHT / 2) - 1)
 
     display.set_pen(GREY)
 
     for a in range(60):
         t.rotate(360 / 60.0 * a, MIDDLE)
-        t.translate(0, 2)
+        t.translate(0, 1)
         vector.draw(tick_mark)
         t.reset()
 
     for a in range(12):
         t.rotate(360 / 12.0 * a, MIDDLE)
-        t.translate(0, 2)
+        t.translate(0, 1)
         vector.draw(hour_mark)
         t.reset()
 
     display.set_pen(GREY)
 
     x, y = MIDDLE
-    y += 5
+    y += 2
 
     angle_minute = minute * 6
     angle_minute += second / 10.0

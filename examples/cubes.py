@@ -54,7 +54,6 @@ class Cube(object):
 
     # Clear our points and recalculate the sin and cos values
     def _update(self):
-
         self.cube_points = []
 
         self.tick = time.ticks_ms() / (self.speed * 1000)
@@ -81,7 +80,6 @@ class Cube(object):
 
     # Rotate on XYZ and save the new points in our list
     def rotate(self):
-
         for v in self.vertices:
 
             start_x, start_y, start_z = v
@@ -106,7 +104,6 @@ class Cube(object):
 
     # Draw the edges of the cube so we can see it on screen!
     def draw(self):
-
         for edge in self.edges:
             display.line(self.cube_points[edge[0]][0], self.cube_points[edge[0]][1], self.cube_points[edge[1]][0], self.cube_points[edge[1]][1])
 
@@ -119,10 +116,28 @@ cubes = [Cube(16, 8, WIDTH / 2, HEIGHT / 2, 1.0), Cube(32, 8, 100, 100, 0.9), Cu
 # Set our initial pen colour
 pen = display.create_pen_hsv(1.0, 1.0, 1.0)
 
-while 1:
-
+while True:
     # We'll use this for cycling through the rainbow
     t = time.ticks_ms() / 1000
+
+    # Now we go through each Cube object we have in 'cubes'
+    # and increase the FOV angle so it appears closer to the screen.
+    # We'll also rotate the cube during this loop too.
+    for cube in cubes:
+        fov = cube.get_fov()
+        fov += 1
+        cube.set_fov(fov)
+
+        # We want the cubes to disappear randomly as they appear close to the screen, so we'll decide when this happens based on the current FOV
+        # We'll re-init that cube and start the process from the beginning!
+        if fov > randint(250, 600):
+            cube.__init__(8, 8, randint(10, WIDTH), randint(10, HEIGHT), randrange(4, 9) / 10)
+
+        cube.rotate()
+
+    # Wait before clearing the screen
+    # we (Core1) might still be copying the buffer
+    i75.wait_for_flip()
 
     # Set the layer we're going to be drawing to.
     display.set_layer(0)
@@ -136,21 +151,9 @@ while 1:
     pen = display.create_pen_hsv(t, 1.0, 1.0)
     display.set_pen(pen)
 
-    # Now we go through each Cube object we have in 'cubes'
-    # and increase the FOV angle so it appears closer to the screen.
-    # We'll also rotate the cube during this loop too.
-    for i, cube in enumerate(cubes):
-        fov = cube.get_fov()
-        fov += 3
-        cube.set_fov(fov)
-        cube.rotate()
+    # Draw our updated cubes
+    for cube in cubes:
         cube.draw()
-
-        # We want the cubes to disappear randomly as they appear close to the screen, so we'll decide when this happens based on the current FOV
-        # We'll replace that cube with a new one and start the process from the beginning!
-        if fov > randint(250, 600):
-            cubes[i] = Cube(8, 8, randint(10, WIDTH), randint(10, HEIGHT), randrange(4, 9) / 10)
 
     # Finally we update the display with our changes :)
     i75.update()
-    time.sleep(0.03)
